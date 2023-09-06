@@ -1,0 +1,100 @@
+{%extends 'base.html'%}
+{%block content%}
+{%load cart_tag%}
+
+    <div class="bg-light py-3">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12 mb-0">
+            <a href="{% url 'index'%}">Home</a> <span class="mx-2 mb-0">/</span>
+            <strong class="text-black">Prescription</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="site-section">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12">
+            <h2 class="h3 mb-5 text-black">Create Your prescription</h2>
+          </div>
+          <div class="col-md-12">
+    
+            <form action="#" method="post">
+            {% csrf_token %}
+              <div class="p-3 p-lg-5 border">
+                <div class="form-group row">
+                  <div class="col-md-6">
+                    <label for="c_doctor" class="text-black">Doctor <span class="text-danger">*</span></label>
+                    <select type="text" class="form-control" id="c_doctor" name="c_doctor" required>
+                        {%for doctor in doctors.all%}
+                            <option value="{{doctor.id}}">{{doctor.name}}</option>
+                        {%endfor%}
+                    
+                    </select>
+                  </div>
+                  <div class="col-md-6">
+                    <label for="c_patient" class="text-black">Patient<span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="c_patient" name="c_patient" required value="{{user.email}}">
+                  </div>
+                </div>
+                
+                
+                
+                <div class="mt-5">
+                    <div class="tab-content" id="pills-tabContent">
+                      <h2 class="h3 mb-5 text-black">Your Drugs</h2>
+                      <div
+                        class="tab-pane fade show active"
+                        id="pills-home"
+                        role="tabpanel"
+                        aria-labelledby="pills-home-tab"
+                      >
+                        <table class="table custom-table">
+                          <thead>
+                            <th>Drug</th>
+                           
+                            <th>Drug Type</th>
+                            <th>Dosage</th>
+                            <th>Flavours</th>
+                            <th>Quantity</th>
+                            <th>Amount</th>
+                          </thead>
+                          <tbody>
+                            {% for key,value in request.session.cart.items %}
+                            <tr>
+                              <th scope="row">{{value.name}}</th>
+                              <th scope="row">{{value.drug_type}}</th>
+                              <th scope="row">{{value.dosage}}</th>
+                              <th scope="row">{{value.flavour}}</th>
+                              <td>
+                                {{value.quantity|floatformat:2}}
+                              </td>
+                              <td>£ {{value.price|floatformat:2}}</td>
+                            </tr>
+                            {%endfor%}
+                            
+                            
+                          </tbody>
+                        </table>
+                      </div>
+                      
+                      
+                      
+                    </div>
+                  </div>
+                <div class="form-group row">
+                  <div class="col-lg-12">
+                    <input type="submit" class="btn btn-primary btn-lg btn-block" value="Create prescription">
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+
+    {% endblock %}

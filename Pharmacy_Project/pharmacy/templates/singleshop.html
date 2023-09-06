@@ -1,0 +1,187 @@
+{%extends 'base.html'%} {%block content%} 
+{%load static%} 
+
+<link rel="stylesheet" href= {%static 'css/flavours.css'%} />
+<div class="bg-light py-3">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12 mb-0">
+        <a href="{% url 'index'%}">Home</a> <span class="mx-2 mb-0">/</span>
+        <a href="{% url 'shop'%}">Store</a> <span class="mx-2 mb-0">/</span>
+        <strong class="text-black">{{drug.name}}</strong>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="site-section">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-5 mr-auto">
+        <div class="border text-center">
+          <img src="{{ drug.drug_url}}" alt="{{ drug.name }}" class="img-fluid p-5" />
+        </div>
+      </div>
+      <div class="col-md-6">
+        <h2 class="text-black">{{drug.name}}</h2>
+        <p>{{drug.description}}</p>
+
+        <p>
+          {{ MEDIA_URL }}
+          {%if drug.previous_price > drug.price%}
+          <del>£{{drug.previous_price|floatformat:2}}</del>
+        {%endif%}
+          <strong class="text-primary h4">£{{drug.price|floatformat:2}}</strong>
+        </p>
+        <form method="post">
+          {%csrf_token%}
+        <div class="mb-5">
+          <div class="input-group mb-3" style="max-width: 220px">
+            <div class="input-group-prepend">
+              <button
+                class="btn btn-outline-primary js-btn-minus"
+                type="button"
+              >
+              <a href="{%url 'item_decrement' drug.id%}">&minus;</a>
+              </button>
+            </div>
+            <input
+              type="text"
+              class="form-control text-center"
+              value="1"
+              placeholder=""
+              aria-label="Example text with button addon"
+              aria-describedby="button-addon1"
+            id="quantity" name="quantity"/>
+            <div class="input-group-append">
+              <button class="btn btn-outline-primary js-btn-plus" type="button">
+                <a href="{%url 'item_increment' drug.id%}">&plus;</a>
+              </button>
+            </div>
+          </div>
+        </div>
+        
+
+        <div class="mt-5">
+          <ul
+            class="nav nav-pills mb-3 custom-pill"
+            id="pills-tab"
+            role="tablist"
+          >
+            
+            <li class="nav-item">
+              <a
+                class="nav-link"
+                id="pills-home-tab"
+                data-toggle="pill"
+                href="#pills-home"
+                role="tab"
+                aria-controls="pills-home"
+                aria-selected="false"
+                >Ordering Information</a
+              >
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link"
+                id="pills-profile-tab"
+                data-toggle="pill"
+                href="#pills-profile"
+                role="tab"
+                aria-controls="pills-profile"
+                aria-selected="false"
+                >Flavours</a
+              >
+            </li>
+          </ul>
+          <div class="tab-content" id="pills-tabContent">
+            <div
+              class="tab-pane fade show active"
+              id="pills-home"
+              role="tabpanel"
+              aria-labelledby="pills-home-tab"
+            >
+              
+
+              <div class="form-group row" style="text-align:center;">
+                <div class="col-md-12">
+                  <label for="c_dosagee" class="text-black">Dosage <span class="text-danger">*</span></label>
+                  <select type="text" class="form-control" id="c_dosage" name="c_dosage" required>
+                    <option value="5 mg">5 mg</option>
+                    <option value="10 mg">10 mg</option>
+                    <option value="25 mg">25 mg</option>
+                    <option value="50 mg">50 mg</option>
+                    <option value="100 mg">100 mg</option>
+                    <option value="200 mg">200 mg</option>
+                    <option value="250 mg">250 mg</option>
+                    <option value="500 mg">500 mg</option>
+                    <option value="1 g">1 g (gram)</option>
+                    <option value="2 g">2 g</option>
+                    <option value="5 g">5 g</option>
+                    <option value="10 g">10 g</option>
+                    <option value="15 g">15 g</option>
+                    <option value="20 g">20 g</option>
+                    <option value="25 g">25 g</option>
+                    <option value="50 g">50 g</option>
+                    <option value="100 g">100 g</option>
+                    <option value="1 mL">1 mL (milliliter)</option>
+                    <option value="5 mL">5 mL</option>
+                    <option value="10 mL">10 mL</option>
+                    <option value="15 mL">15 mL</option>
+                    <option value="20 mL">20 mL</option>
+                    <option value="25 mL">25 mL</option>
+                    <option value="50 mL">50 mL</option>
+                    <option value="100 mL">100 mL</option>
+                  </select>
+                  
+
+                    <label for="c_medicine_type" class="text-black">Type of Medicine <span class="text-danger">*</span></label>
+                    <select type="text" class="form-control" id="c_medicine_type" name="medicine_type" required>
+                        {%for medicine_type in drug_choices%}
+                            <option value="{{medicine_type}}">{{medicine_type}}</option>
+                        {%endfor%}
+                    
+                    </select>
+                </div>
+              </div>
+            </div>
+            <div
+              class="tab-pane fade"
+              id="pills-profile"
+              role="tabpanel"
+              aria-labelledby="pills-profile-tab"
+            >
+            <div class="form-group row" style="text-align:center;">
+              <div class="col-md-12">
+            <label for="c_flavour" class="text-black">Flavours <span class="text-danger">*</span></label>
+            <select type="text" class="form-control" id="c_flavour" name="c_flavour" required>
+                {%for flavor in drug.flavour_id.all%}
+                    <option value="{{flavor.name}}">{{flavor.name}}</option>
+                {%endfor%}
+            
+            </select>
+
+           </div>
+          </div>
+            </div>
+            
+            <p>
+              <input
+                type="submit"
+                class="buy-now btn btn-sm height-auto px-4 py-3 btn-primary"
+                id="add-to-cart-btn" value="Add To Cart" >
+            </p>
+
+          </form>                
+          </div>
+        </div>
+      
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+{% endblock %}
